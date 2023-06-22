@@ -16,7 +16,7 @@ export function getConfig(): Config {
 }
 
 function initialiseConfig() {
-	const environment = process.env.NODE_ENV || "development";
+	const environment = process.env.NODE_ENV ?? "development";
 	const isDev = environment === "development";
 
 	console.log(`📟 Initialising config for the '${environment}' environment...`);

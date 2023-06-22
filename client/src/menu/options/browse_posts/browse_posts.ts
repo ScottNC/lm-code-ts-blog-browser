@@ -1,16 +1,16 @@
-import { fetchPost } from "../../../api/fetch_post.mjs";
-import { clear, print, prompt, printNewLine } from "../../../ui/console.mjs";
+import { fetchPost } from "../../../api/fetch_post";
+import { clear, print, prompt, printNewLine } from "../../../ui/console";
 
 export async function browsePosts() {
-	clear("nope");
+	clear();
 
-	const desiredPostId = await prompt("Enter Post ID");
+	const desiredPostId: string = await prompt("Enter Post ID");
 
 	// TODO: should we validate this?!
 
 	print(`📨 Fetching post "${desiredPostId}...`);
 
-	const result = await fetchPost(desiredPostId);
+	const result = await fetchPost(parseInt(desiredPostId));
 
 	print(`🥳 Received post:`);
 

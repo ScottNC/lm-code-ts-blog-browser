@@ -1,5 +1,6 @@
 import { fetchPost } from "../../../api/fetch_post";
 import { clear, print, prompt, printNewLine } from "../../../ui/console";
+import { Post } from "../../../../../server/src/types/posts.types";
 
 export async function browsePosts() {
 	clear();
@@ -15,7 +16,7 @@ export async function browsePosts() {
 
 	print(`📨 Fetching post ${postId}...`);
 
-	const result = await fetchPost(desiredPostId);
+	const result: Post | never[] = await fetchPost(desiredPostId);
 
 	print(`🥳 Received post:`);
 

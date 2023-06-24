@@ -1,5 +1,6 @@
 import { fetchAllUsers } from "../../../api/fetch_all_users";
 import { clear, print, prompt, printNewLine } from "../../../ui/console";
+import { User } from "../../../../../server/src/types/posts.types";
 
 export async function showAllUsers() {
 	clear(true);
@@ -8,7 +9,7 @@ export async function showAllUsers() {
 
 	print("📨 Fetching users...");
 
-	const result = await fetchAllUsers();
+	const result: User[] = await fetchAllUsers();
 
 	print(`🥳 Received ${result.length} users. Here they are:`);
 

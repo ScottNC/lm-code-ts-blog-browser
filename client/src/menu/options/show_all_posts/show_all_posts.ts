@@ -1,5 +1,6 @@
 import { fetchAllPosts } from "../../../api/fetch_all_posts";
 import { clear, print, prompt, printNewLine } from "../../../ui/console";
+import { Post } from "../../../../../server/src/types/posts.types";
 
 export async function showAllPosts() {
 	clear(true);
@@ -8,7 +9,7 @@ export async function showAllPosts() {
 
 	print("📨 Fetching posts...");
 
-	const result = await fetchAllPosts();
+	const result : Post[] = await fetchAllPosts();
 
 	print(`🥳 Received ${result.length} posts. Here they are:`);
 

@@ -5,11 +5,10 @@ export function printNewLine() {
 	console.log(EOL); // this imports the correct End-Of-Line for either Windows or Unix
 }
 
-export function print(str: string, newLine = true) {
+export function print(str: string, newLine : boolean = true) {
 	console.log(str);
-	if (newLine === true) {
+	if (newLine)
 		printNewLine();
-	}
 }
 
 export function clear(addTopBorder: boolean = false) {
@@ -25,6 +24,6 @@ const reader = readline.createInterface({
 });
 
 export async function prompt(prompt : string) {
-	const answer = await reader.question(`${prompt}  > `);
+	const answer : string = await reader.question(`${prompt}  > `);
 	return answer;
 }

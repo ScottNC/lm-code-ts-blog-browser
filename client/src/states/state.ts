@@ -1,13 +1,13 @@
-import { states } from "./states";
+import { STATE_MAP, singleState } from "./states";
 
 export class State {
-	#state = states.MENU;
+	#state: singleState = STATE_MAP.MENU;
 
 	get() {
 		return this.#state;
 	}
 
-	set(newState: string) {
+	set(newState: singleState) {
 		this.#state = newState;
 	}
 }

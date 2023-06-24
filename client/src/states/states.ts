@@ -2,15 +2,17 @@ import { sendMessage } from "../menu/options/send_message/send_message";
 import { showAllPosts } from "../menu/options/show_all_posts/show_all_posts";
 import { showAllUsers } from "../menu/options/show_all_users/show_all_users";
 import { browsePosts } from "../menu/options/browse_posts/browse_posts";
+import { newUser } from "../menu/options/add_user/add_user";
 
 export const MENU_STATE = "MENU";
-export const REDO_STATES = ["UNKNOWN", "ADD_USER"] as const;
+export const REDO_STATES = ["UNKNOWN"] as const;
 
 const API_STATES = [
   "SEND_MESSAGE",
   "SHOW_POSTS",
   "SHOW_USERS",
   "BROWSE_POSTS",
+	"ADD_USER"
 ] as const;
 
 type Menu = typeof MENU_STATE;
@@ -31,12 +33,12 @@ export const STATE_MAP: { [key in (string | number)]: AnyState } = {
 
 export const REDO_MESSAGE: { [key in Redo] : string } = {
 	UNKNOWN: "😵 We have entered an unknown state.",
-	ADD_USER: "🏗️  This functionality has not been implemented!"
 } as const;
 
 export const API_RUN : { [key in Api] : () => Promise<void> } = {
 	SEND_MESSAGE: sendMessage,
 	SHOW_POSTS: showAllPosts,
 	SHOW_USERS: showAllUsers,
-	BROWSE_POSTS: browsePosts
+	BROWSE_POSTS: browsePosts,
+	ADD_USER: newUser
 } as const;

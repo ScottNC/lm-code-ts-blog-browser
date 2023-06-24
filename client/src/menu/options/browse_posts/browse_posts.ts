@@ -4,13 +4,18 @@ import { clear, print, prompt, printNewLine } from "../../../ui/console";
 export async function browsePosts() {
 	clear();
 
-	const desiredPostId: string = await prompt("Enter Post ID");
+	let postId: string;
+	let desiredPostId: number;
+	
+	do {
+		postId = await prompt("Enter Post ID (Please enter a number)");
+		desiredPostId = parseInt(postId);
+	}
+	while (isNaN(desiredPostId)) 
 
-	// TODO: should we validate this?!
+	print(`📨 Fetching post ${postId}...`);
 
-	print(`📨 Fetching post "${desiredPostId}...`);
-
-	const result = await fetchPost(parseInt(desiredPostId));
+	const result = await fetchPost(desiredPostId);
 
 	print(`🥳 Received post:`);
 

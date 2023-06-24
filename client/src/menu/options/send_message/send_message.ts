@@ -1,5 +1,4 @@
 import { sendMessageToServer } from "../../../api/send_message_to_server";
-import { STATE_MAP } from "../../../states/states";
 import { clear, print, printNewLine, prompt } from "../../../ui/console";
 
 export async function sendMessage() {
@@ -16,6 +15,4 @@ export async function sendMessage() {
 	else print("😵 Message NOT received.");
 
 	await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
-
-	return STATE_MAP.MENU;
 }

@@ -1,24 +1,25 @@
-import { State } from "./state";
-import { clear, print, prompt } from "../ui/console";
 import { sendMessage } from "../menu/options/send_message/send_message";
-import { showMenu } from "../menu/menu";
 import { showAllPosts } from "../menu/options/show_all_posts/show_all_posts";
 import { showAllUsers } from "../menu/options/show_all_users/show_all_users";
 import { browsePosts } from "../menu/options/browse_posts/browse_posts";
 
-export const STATES = [
+export const MENU_STATE = "MENU";
+export const REDO_STATES = ["UNKNOWN", "ADD_USER"] as const;
+
+const API_STATES = [
   "SEND_MESSAGE",
-  "MENU",
   "SHOW_POSTS",
   "SHOW_USERS",
   "BROWSE_POSTS",
-  "ADD_USER",
-  "UNKNOWN",
 ] as const;
 
-export type singleState = typeof STATES[number];
+type Menu = typeof MENU_STATE;
+export type Redo = typeof REDO_STATES[number];
+export type Api = typeof API_STATES[number];
 
-export const STATE_MAP: { [key in (string | number)]: singleState } = {
+export type AnyState = Menu | Redo | Api;
+
+export const STATE_MAP: { [key in (string | number)]: AnyState } = {
 	MENU: "MENU",
 	UNKNOWN: "UNKNOWN",
 	0: "SEND_MESSAGE",
@@ -28,40 +29,14 @@ export const STATE_MAP: { [key in (string | number)]: singleState } = {
 	4: "ADD_USER"
 } as const;
 
-export const STATE_RUN : { [key in singleState] : (state: State) => Promise<void> } = {
-  "SEND_MESSAGE" : async (state: State) => {
-		const nextState : singleState = await sendMessage();
-		state.set(nextState);
-	},
-  "MENU" : async (state: State) => {
-		const newMenuOption : singleState = await showMenu();
-		state.set(newMenuOption);
-	},
-  "SHOW_POSTS" : async (state: State) => {
-		clear();
-		await showAllPosts();
-		state.set(STATE_MAP.MENU);
-	},
-  "SHOW_USERS" : async (state: State) => {
-		clear();
-		await showAllUsers();
-		state.set(STATE_MAP.MENU);
-	},
-  "BROWSE_POSTS" : async (state: State) => {
-		clear();
-		await browsePosts();
-		state.set(STATE_MAP.MENU);
-	},
-  "ADD_USER" : async (state: State) => {
-		clear();
-		print("🏗️  This functionality has not been implemented!");
-		await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
-		state.set(STATE_MAP.MENU);
-	},
-  "UNKNOWN" : async (state: State) => {
-		clear();
-		print("😵 We have entered an unknown state.");
-		await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
-		state.set(STATE_MAP.MENU);
-	},
+export const REDO_MESSAGE: { [key in Redo] : string } = {
+	UNKNOWN: "😵 We have entered an unknown state.",
+	ADD_USER: "🏗️  This functionality has not been implemented!"
+} as const;
+
+export const API_RUN : { [key in Api] : () => Promise<void> } = {
+	SEND_MESSAGE: sendMessage,
+	SHOW_POSTS: showAllPosts,
+	SHOW_USERS: showAllUsers,
+	BROWSE_POSTS: browsePosts
 } as const;

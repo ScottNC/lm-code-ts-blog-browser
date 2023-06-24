@@ -16,6 +16,4 @@ export async function showAllPosts() {
 
 	printNewLine();
 	await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
-
-	return result;
 }

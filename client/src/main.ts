@@ -1,12 +1,5 @@
-import { exit } from "./exit/exit";
-import { showMenu } from "./menu/menu";
-import { browsePosts } from "./menu/options/browse_posts/browse_posts";
-import { sendMessage } from "./menu/options/send_message/send_message";
-import { showAllPosts } from "./menu/options/show_all_posts/show_all_posts";
-import { showAllUsers } from "./menu/options/show_all_users/show_all_users";
 import { State } from "./states/state";
-import { STATE_MAP } from "./states/states";
-import { clear, print, printNewLine, prompt } from "./ui/console";
+import { clear, print, prompt } from "./ui/console";
 
 async function begin() {
 	clear(true);
@@ -16,65 +9,10 @@ async function begin() {
 }
 
 async function main() {
-	let state = new State();
+	let state: State = new State();
 
-	while (true) {
-		switch (state.get()) {
-			case "MENU":
-				const newMenuOption = await showMenu();
-				state.set(newMenuOption);
-				break;
-			case "SEND_MESSAGE":
-				const nextState = await sendMessage();
-				state.set(nextState);
-				break;
-			case "SHOW_POSTS":
-				clear();
-				await showAllPosts();
-				state.set(STATE_MAP.MENU);
-				break;
-			case "SHOW_USERS":
-				clear();
-				await showAllUsers();
-				state.set(STATE_MAP.MENU);
-				break;
-			case "BROWSE_POSTS":
-				clear();
-				await browsePosts();
-				state.set(STATE_MAP.MENU);
-				break;
-			case "ADD_USER":
-				clear();
-				print("🏗️  This functionality has not been implemented!");
-				await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
-				state.set(STATE_MAP.MENU);
-				break;
-			case "UNKNOWN":
-				clear();
-				print("😵 We have entered an unknown state.");
-				await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
-				state.set(STATE_MAP.MENU);
-				break;
-			// case "CABBAGE":
-			// 	clear();
-			// 	print("🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬", false);
-			// 	print("🥬      CABBAGE MODE UNLOCKED     🥬", false);
-			// 	print("🥬     Why did you want this?     🥬", false);
-			// 	print("🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬🥬", false);
-			// 	await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
-			// 	state.set(  STATE_MAP.MENU);
-			// 	break;
-			default:
-				clear();
-				print(`🌋 😱 Uh-oh, we've entered an invalid state: "${state.get()}"`);
-				print("💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥", false);
-				print("💥 Crashing the program now...  💥", false);
-				print("💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥", false);
-				printNewLine();
-				exit(99);
-				break;
-		}
-	}
+	while (true)
+		await state.run();
 }
 
 begin();

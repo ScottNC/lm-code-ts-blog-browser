@@ -10,9 +10,9 @@ export async function sendMessageToServer(message: string) {
 			body: JSON.stringify({ message }),
 		});
 
-		const json = await result.json();
+		const json : { success: boolean } = await result.json();
 
-		const { success } = json;
+		const success : boolean = json.success;
 
 		return success;
 	} catch (e) {

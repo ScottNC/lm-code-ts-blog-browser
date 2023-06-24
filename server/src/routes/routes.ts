@@ -83,8 +83,8 @@ function addAPIRoutes(app: Express) {
 	});
 
 	apiRouter.post("/users/add", (req, res) => {
-		if (typeof req.query?.name === "string") {
-			const name: string = req.query.name;
+		if (typeof req.body?.name === "string") {
+			const name: string = req.body.name;
 			addNewUser(name);
 			res.status(200).send({success: true});
 		}

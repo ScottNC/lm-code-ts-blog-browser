@@ -27,6 +27,10 @@ export function getAllUsers(): User[] {
 	return users;
 }
 
+export function getUserById(userId: string) {
+	return users.find((user: User) => user.id === userId);
+}
+
 export function addNewUser(name: string) {
 	const newUser: User = {
 		id: (users.length + 1).toString(),

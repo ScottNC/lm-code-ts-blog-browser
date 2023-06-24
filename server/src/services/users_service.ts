@@ -24,7 +24,15 @@ const users = [
 ];
 
 export function getAllUsers(): User[] {
-	// in the absence of a true Model layer, our service can simply return a hard-coded array of users
-
 	return users;
+}
+
+export function addNewUser(name: string) {
+	const newUser: User = {
+		id: (users.length + 1).toString(),
+		name,
+		creationDate: new Date(),
+	};
+
+	users.push(newUser);
 }

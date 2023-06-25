@@ -2,6 +2,7 @@ import * as express from "express";
 import { Express } from "express";
 import { addNewPost, getAllPosts } from "../services/posts_service";
 import { addNewUser, getAllUsers } from "../services/users_service";
+import { User } from "../types/posts.types";
 
 /*
 
@@ -89,7 +90,15 @@ function addAPIRoutes(app: Express) {
 
 	console.log("✍️  Adding user routes...");
 	apiRouter.get("/users/all", (req, res) => {
-		res.status(200).send(JSON.stringify(getAllUsers()));
+		const users : User[] = getAllUsers();
+		let limit : number = users.length;
+
+		if (typeof req.query?.limit === 'string') {
+			const givenLimit = parseInt(req.query.limit);
+			limit = isNaN(givenLimit) ? limit : givenLimit;
+		}
+
+		res.status(200).send(JSON.stringify(users.slice(0, limit)));
 	});
 
 	apiRouter.post("/users/add", (req, res) => {

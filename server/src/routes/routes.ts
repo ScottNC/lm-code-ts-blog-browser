@@ -2,7 +2,7 @@ import * as express from "express";
 import { Express } from "express";
 import { addNewPost, getAllPosts } from "../services/posts_service";
 import { addNewUser, getAllUsers } from "../services/users_service";
-import { Post, User } from "../types/posts.types";
+import { Post, User, UserKey, USER_KEYS } from "../types/posts.types";
 import { getLimit } from "../helpers/helpers";
 
 /*
@@ -95,6 +95,19 @@ function addAPIRoutes(app: Express) {
 	apiRouter.get("/users/all", (req, res) => {
 		const users : User[] = getAllUsers();
 		const limit : number = (typeof req.query?.limit === 'string' && getLimit(req.query.limit)) || users.length;
+
+		const sortBy: UserKey = (typeof req.query?.sortBy === 'string' && USER_KEYS.includes(req.query.sortBy as UserKey)
+			&& req.query.sortBy as UserKey) || 'id';
+
+		const sortOrder: number = req.query?.sortOrder === 'desc' ? -1 : 1;
+
+		if (sortBy === 'id')
+			users.sort((a: User, b: User) => (parseInt(a[sortBy]) - parseInt(b[sortBy])) * sortOrder);
+		else if (sortBy === 'name')
+			users.sort((a: User, b: User) => (a[sortBy].localeCompare(b[sortBy])) * sortOrder);
+		else 
+			users.sort((a: User, b: User) => (a[sortBy].getTime() - b[sortBy].getTime()) * sortOrder);
+
 		res.status(200).send(JSON.stringify(users.slice(0, limit)));
 	});
 

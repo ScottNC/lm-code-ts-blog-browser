@@ -2,7 +2,7 @@ import * as express from "express";
 import { Express } from "express";
 import { addNewPost, getAllPosts } from "../services/posts_service";
 import { addNewUser, getAllUsers } from "../services/users_service";
-import { Post, User, UserKey, USER_KEYS } from "../types/posts.types";
+import { Post, User, UserKey, USER_KEYS, PostKey, POST_KEYS } from "../types/posts.types";
 import { getLimit } from "../helpers/helpers";
 
 /*
@@ -71,6 +71,29 @@ function addAPIRoutes(app: Express) {
 	apiRouter.get("/posts/all", (req, res) => {
 		const posts : Post[] = getAllPosts();
 		const limit : number = (typeof req.query?.limit === 'string' && getLimit(req.query.limit)) || posts.length;
+
+		const sortBy: PostKey = (typeof req.query?.sortBy === 'string' && POST_KEYS.includes(req.query.sortBy as PostKey)
+			&& req.query.sortBy as PostKey) || 'id';
+
+		const sortOrder: number = req.query?.sortOrder === 'desc' ? -1 : 1;
+
+		if (sortBy === 'id')
+			posts.sort((a: Post, b: Post) => (parseInt(a[sortBy]) - parseInt(b[sortBy])) * sortOrder);
+		else if (sortBy === 'text' || sortBy === 'title')
+			posts.sort((a: Post, b: Post) => (a[sortBy].localeCompare(b[sortBy])) * sortOrder);
+		else {
+			const authorSort: UserKey = (typeof req.query?.authorSort === 'string' && USER_KEYS.includes(req.query.authorSort as UserKey)
+				&& req.query.authorSort as UserKey) || 'id';
+
+			if (authorSort === 'id')
+				posts.sort((a: Post, b: Post) => (parseInt(a[sortBy][authorSort]) - parseInt(b[sortBy][authorSort])) * sortOrder);
+			else if (authorSort === 'name')
+				posts.sort((a: Post, b: Post) => (a[sortBy][authorSort].localeCompare(b[sortBy][authorSort])) * sortOrder);
+			else 
+				posts.sort((a: Post, b: Post) => (a[sortBy][authorSort].getTime() - b[sortBy][authorSort].getTime()) * sortOrder);
+		}
+
+		
 		res.status(200).send(JSON.stringify(posts.slice(0, limit)));
 	});
 

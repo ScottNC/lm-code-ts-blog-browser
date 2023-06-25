@@ -2,6 +2,17 @@ import { fetchAllUsers } from "../../../api/fetch_all_users";
 import { clear, print, prompt, printNewLine } from "../../../ui/console";
 import { USER_KEYS, User } from "../../../../../server/src/types/posts.types";
 
+const ORDER = [
+	{
+		name: 'Ascending',
+		reference: 'asc'
+	},
+	{
+		name: 'Descending',
+		reference: 'desc'
+	},
+]
+
 export async function showAllUsers() {
 	clear(true);
 
@@ -11,9 +22,11 @@ export async function showAllUsers() {
 
 	const sortBy : string = await getSortBy();
 
+	const sortOrder : string = await getSortOrder();
+
 	print("📨 Fetching users...");
 
-	const result: User[] = await fetchAllUsers({limit, sortBy});
+	const result: User[] = await fetchAllUsers({limit, sortBy, sortOrder});
 
 	print(`🥳 Received ${result.length} users. Here they are:`);
 
@@ -23,12 +36,28 @@ export async function showAllUsers() {
 	await prompt("⌨️ Press [ENTER] to return to the main menu! 🕶️");
 }
 
-async function getSortBy() {
+async function getSortBy() {	
+	const response : number | '' = await askQuery(USER_KEYS as unknown as string[]);
+
+	if (response === '') return response;
+
+	return USER_KEYS[response];
+}
+
+async function getSortOrder() {
+	const response : number | '' = await askQuery(ORDER.map(a => a.name));
+
+	if (response === '') return response;
+
+	return ORDER[response].reference;
+}
+
+async function askQuery(options: string[]) {
 	clear(true);
 
 	printNewLine();
 
-	USER_KEYS.forEach((key: string, idx: number) => console.log((idx + 1).toString() + '. ' + key))
+	options.forEach((key: string, idx: number) => console.log((idx + 1).toString() + '. ' + key))
 
 	printNewLine();
 
@@ -37,10 +66,10 @@ async function getSortBy() {
 	
 	do {
 		keyStr = await prompt("Please select how you want to order the users? (Press ENTER to skip)");
-		if (keyStr === '') return '';
+		if (keyStr === '') return keyStr;
 		key = parseInt(keyStr);
 	}
-	while (isNaN(key) || key <= 0 || key > USER_KEYS.length) 
+	while (isNaN(key) || key <= 0 || key > options.length) 
 
-	return USER_KEYS[key - 1];
+	return key - 1;
 }

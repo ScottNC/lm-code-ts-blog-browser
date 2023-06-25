@@ -2,7 +2,8 @@ import * as express from "express";
 import { Express } from "express";
 import { addNewPost, getAllPosts } from "../services/posts_service";
 import { addNewUser, getAllUsers } from "../services/users_service";
-import { User } from "../types/posts.types";
+import { Post, User } from "../types/posts.types";
+import { getLimit } from "../helpers/helpers";
 
 /*
 
@@ -68,7 +69,9 @@ function addAPIRoutes(app: Express) {
 	// now we'll add some routes that let us browse some blog posts
 	console.log("✍️  Adding blog post routes...");
 	apiRouter.get("/posts/all", (req, res) => {
-		res.status(200).send(JSON.stringify(getAllPosts()));
+		const posts : Post[] = getAllPosts();
+		const limit : number = (typeof req.query?.limit === 'string' && getLimit(req.query.limit)) || posts.length;
+		res.status(200).send(JSON.stringify(posts.slice(0, limit)));
 	});
 
 	apiRouter.get("/posts/:id", (req, res) => {
@@ -91,13 +94,7 @@ function addAPIRoutes(app: Express) {
 	console.log("✍️  Adding user routes...");
 	apiRouter.get("/users/all", (req, res) => {
 		const users : User[] = getAllUsers();
-		let limit : number = users.length;
-
-		if (typeof req.query?.limit === 'string') {
-			const givenLimit = parseInt(req.query.limit);
-			limit = isNaN(givenLimit) ? limit : givenLimit;
-		}
-
+		const limit : number = (typeof req.query?.limit === 'string' && getLimit(req.query.limit)) || users.length;
 		res.status(200).send(JSON.stringify(users.slice(0, limit)));
 	});
 

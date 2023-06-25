@@ -7,9 +7,11 @@ export async function showAllUsers() {
 
 	printNewLine();
 
+	const limit : string = await prompt("What is the maximum posts you want to see? (Press [ENTER] for all of them)")
+
 	print("📨 Fetching users...");
 
-	const result: User[] = await fetchAllUsers();
+	const result: User[] = await fetchAllUsers({limit});
 
 	print(`🥳 Received ${result.length} users. Here they are:`);
 
